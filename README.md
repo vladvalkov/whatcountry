@@ -20,15 +20,6 @@ Arguments:
 Options:
   -e, --exact    Use exact matching on passed string
   -h, --help     Print help
-  -V, --version  Print version❯ whatcountry --help
-Usage: whatcountry [OPTIONS] [COUNTRY]
-
-Arguments:
-  [COUNTRY]
-
-Options:
-  -e, --exact    Use exact matching on passed string
-  -h, --help     Print help
   -V, --version  Print version
 ```
 
