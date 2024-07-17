@@ -1,47 +1,52 @@
 use std::fmt::{Display, Formatter};
+use clap::builder::Str;
 use iso_country::data::CountryCode;
 
-const LOWERCASE_COUNTRIES: Vec<CountryCode> = iso_country::data::all()
-    .into_iter()
-    .map(|country| {
-        CountryCode{
-            alpha2: country.alpha2.to_lowercase().as_str(),
-            alpha3: country.alpha3.to_lowercase().as_str(),
-            name: country.name.to_lowercase().as_str(),
-            num: country.num,
-        }
-    })
-    .collect();
 
+pub fn all_countries() -> String {
+    let countries = iso_country::data::all()
+        .iter()
+        .map(|x| DisplayCountryCode(x).to_string())
+        .collect::<Vec<_>>()
+        .join("\r\n");
+    return countries
+}
+pub fn find_country(country: &String, exact: bool) -> Option<String> {
+    let s = country.to_lowercase();
 
-fn find_country(country: String) -> String {
-    let s = country.to_lowercase().as_str();
+    let s_ref = s.as_str();
 
-    let v: Vec<_> = LOWERCASE_COUNTRIES
+    if exact {
+
+    }
+    let v: Vec<_> = iso_country::data::all()
         .iter()
         .filter(|c| {
-            c.num == s
-                || c.alpha2.contains(s)
-                || c.alpha3.contains(s)
-                || c.name.contains(s)
+            if !exact {
+                return c.num.ends_with(s_ref)
+                    || c.alpha2.to_lowercase().contains(s_ref)
+                    || c.alpha3.to_lowercase().contains(s_ref)
+                    || c.name.to_lowercase().contains(s_ref)
+            } else {
+                return c.num.trim_start_matches("0") == s_ref.trim_start_matches("0")
+                    || c.alpha2.to_lowercase() == s_ref
+                    || c.alpha3.to_lowercase() == s_ref
+                    || c.name.to_lowercase() == s_ref
+            }
         })
         .map(|x| DisplayCountryCode(x).to_string()).collect();
 
-    if v.is_empty() {
-        return String::from("Unknown country!")
+    match v.len() {
+        0 => None,
+        _ => Some(v.join("\r\n"))
     }
-
-    v.join("\n")
 }
 
 struct DisplayCountryCode<'a>(&'a CountryCode<'a>);
 
 impl Display for DisplayCountryCode<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}\t{}\t{}\t{}",
-            self.0.num, self.0.alpha2, self.0.alpha3, self.0.name
-        )
+        write!(f, "{}\t{}\t{}\t{}",
+               self.0.num, self.0.alpha2, self.0.alpha3, self.0.name)
     }
 }
