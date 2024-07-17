@@ -1,7 +1,6 @@
 use std::fmt::{Display, Formatter};
-use clap::builder::Str;
-use iso_country::data::CountryCode;
 
+use iso_country::data::CountryCode;
 
 pub fn all_countries() -> String {
     let countries = iso_country::data::all()

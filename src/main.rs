@@ -1,9 +1,8 @@
-
 extern crate clap;
 extern crate iso_country;
 
 use clap::Parser;
-use iso_country::data::all;
+
 use find_country::{all_countries, find_country};
 
 mod find_country;
